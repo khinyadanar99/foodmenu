@@ -9,31 +9,31 @@ function Food() {
     const [addedItemState, setAddedItemState] = useState([]);
     const [txtState, setTxtState] = useState(true);
     const [totalState, setTotalState] = useState(0);
+    const [updateItemState, setUpdateItemState] = useState([]);
 
     const onAddItem = index => {
-        const temp = FoodList[index];
-        console.log(temp);
-        var i = 0;
-        if (addedItemState.length > 0) {
-            console.log("same");
-            while (temp.title !== addedItemState[i].title || i > addedItemState.length) {    
-                i = i + 1;
-            }
-
-            if (i<addedItemState.length) {
-                temp.quantity = temp.quantity + 1;
-                temp.price = temp.price + temp.price;
-            }
-        } else {
-            temp.quantity = 1;
-        }
-        setAddedItemState((originalItem) => {
-            return [...originalItem, temp]
+        
+        setUpdateItemState((originalItem) => {
+            return [...originalItem, FoodList[index]]
         });
-        setTotalState(totalState+temp.price);
-        
-        
+        var price = 0;
+        if (updateItemState.length > 0) {            
+            updateItemState.map((updateItem, i) => {
+                if(updateItem.title === FoodList[index].title){
+                    updateItem.quantity = updateItem.quantity + 1;
+                    console.log(FoodList);
+                    const updateItemStateCopy = [...updateItemState]
+                    updateItemStateCopy.slice(0, -1);
+                    setUpdateItemState(updateItemStateCopy);
+                    // item.quantity = item.quantity + 1;
+                    // item.price = item.price + item.price;
+                    // console.log(updateItemState);
+                }  
+            })
+        }
 
+        setTotalState(totalState+FoodList[index].price);
+        
           
     }
     
@@ -48,7 +48,7 @@ function Food() {
                 <div className="foodList">
                     {FoodList.map((item, index) => {
                         return (
-                        <FoodItem key={index} food = {FoodList[index]} addItem={() => onAddItem(index)}></FoodItem>
+                        <FoodItem key={index} food = {item} addItem={() => onAddItem(index)}></FoodItem>
                         );
                     })}  
                 </div>
@@ -57,11 +57,11 @@ function Food() {
             <div className = {txtState ? "cart hide" : "cart"}>
                 <button onClick={() => setTxtState(!txtState)}>&#10005;</button>
                 <h2>Current Order</h2>
-                {addedItemState.length > 0 ? <>{addedItemState.map((item, index) => (
+                {updateItemState.length > 0 ? <>{updateItemState.map((item1, index) => (
                     <div className="order-item" key={index}>
-                        <span>{item.title}</span>
-                        <span>{item.quantity}</span>
-                        <span>${item.price}</span>
+                        <span>{item1.title}</span>
+                        <span>{item1.quantity}</span>
+                        <span>${item1.price}</span>
                     </div>
                 ))}</> : "Start Ordering"}
                 
