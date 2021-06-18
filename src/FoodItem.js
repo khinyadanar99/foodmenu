@@ -7,7 +7,7 @@ function FoodItem({food, addItem}) {
         addItem();
     }
 
-    const {title: foodTitle, category, price, image, quantity} = food;
+    const {title: foodTitle, category, price, image} = food;
 
     return (
         <>
@@ -23,7 +23,6 @@ function FoodItem({food, addItem}) {
                     <div>
                         <button type="button" onClick={() => myfunc()}>+ Add item</button>
                         <span>${price}</span>
-                        <span>{quantity}</span>
                     </div>
                 </div>
             </div>
