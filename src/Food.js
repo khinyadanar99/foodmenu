@@ -6,40 +6,41 @@ import FoodItem from './FoodItem';
 import FoodList from './FoodList';
 
 function Food() {
-    const [cartState, setCartState] = useState([]);
     const [txtState, setTxtState] = useState(true);
-    const [totalState, setTotalState] = useState(0);
-    const [updateItemState, setUpdateItemState] = useState([]);
-    const foodAry = FoodList;
-
-    const onAddItem = item => {
-        // setUpdateItemState((originalItem) => {
-        //     return [...originalItem, foodAry[index]]
-        // });
-        let added = false;
-                 
-        cartState.map((cartItem, i) => {
-            if(cartItem.title === item.title){
-                added = true;
-                console.log(cartState);
-                console.log(updateItemState);
-                updateItemState[i].quantity = updateItemState[i].quantity + 1;
-                updateItemState[i].price = updateItemState[i].price + updateItemState[i].price;
-                
-            } 
-        })
-        if (!added) {
-            setCartState([...cartState, item]);
-            setUpdateItemState([...updateItemState, item]);
-            console.log(cartState);
-            console.log(updateItemState);
+    const [itemState, setItemState] = useState([]);
+    const [addedItemsNames, setAddedItemsNames] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    
+    const onAddItem = (item) => {
+        if (addedItemsNames.includes(item.title)) {
+            let menuItems = [...itemState];
+            itemState.forEach((each, i) => {
+                if (each.title === item.title) {
+                    let currentItem = { ...menuItems[i] };
+                    currentItem.quantity += 1;
+                    currentItem.totalPrice += currentItem.price;
+                    menuItems[i] = currentItem;
+                    setItemState(menuItems);
+                }
+            });
+        } else {
+            setAddedItemsNames((old) => {
+                return [...old, item.title];
+            });
+            setItemState((old) => {
+                return [
+                ...old,
+                {
+                    title: item.title,
+                    quantity: 1,
+                    price: item.price,
+                    totalPrice: item.price,
+                },
+                ];
+            });
         }
-        
-
-        setTotalState(totalState+item.price);
-        
-          
-    }
+        setTotalPrice((old) => old + item.price);
+    };
     
     return (
         <>
@@ -64,15 +65,15 @@ function Food() {
             <div className = {txtState ? "cart hide" : "cart"}>
                 <button onClick={() => setTxtState(!txtState)}>&#10005;</button>
                 <h2>Current Order</h2>
-                {updateItemState.length > 0 ? <>{updateItemState.map((item1, index) => (
+                {itemState.length > 0 ? <>{itemState.map((item1, index) => (
                     <div className="order-item" key={index}>
                         <span>{item1.title}</span>
                         <span>{item1.quantity}</span>
-                        <span>${item1.price}</span>
+                        <span>${item1.totalPrice}</span>
                     </div>
                 ))}</> : "Start Ordering"}
                 
-                <p>{totalState}</p>   
+                <p>{totalPrice}</p>   
             </div>
             
             
